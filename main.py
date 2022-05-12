@@ -1,72 +1,60 @@
 import random
-from time import sleep
 from deck import cards
 from classes import Hand
+from time import sleep
 
 def play():
-    print('Now playing Blackjack')
-    sleep(0.5)
-    print('Drawing cards')
-    sleep(1.5)
+    print("""
+888888b.   888                   888       d8b                   888      
+888  "88b  888                   888       Y8P                   888      
+888  .88P  888                   888                             888      
+8888888K.  888  8888b.   .d8888b 888  888 8888  8888b.   .d8888b 888  888 
+888  "Y88b 888     "88b d88P"    888 .88P "888     "88b d88P"    888 .88P 
+888    888 888 .d888888 888      888888K   888 .d888888 888      888888K  
+888   d88P 888 888  888 Y88b.    888 "88b  888 888  888 Y88b.    888 "88b 
+8888888P"  888 "Y888888  "Y8888P 888  888  888 "Y888888  "Y8888P 888  888 
+                                           888                            
+                                          d88P                            
+                                        888P""")
     draw = random.sample(cards,4)
     player = Hand(draw[::2])
     dealer = Hand(draw[1::2])
-    print('Your hand:\n'+player.first[0],"\n"+player.second[0])
-    sleep(0.5)
-    print('Your total: ',player.total())
-    sleep(0.5)
-
+    sleep(1)
+    print('Drawing your cards ... \n \n')
+    sleep(1.5)
+    print(player.myhand[0][0],"\n"+player.myhand[1][0])
+    print('TOTAL - ',player.total,'\n')
     stand = False
-    playertotal = player.total()
-    dealertotal = dealer.total()
     while stand == False:
-        response = input('Hit or Stand?')
+        response = input('Hit or Stand? ')
+        print()
+        sleep(0.75)
         if response.lower() == 'stand':
-            while dealertotal < 16:
-                dealerhit = random.sample(cards,1)[0]
-                if type(dealerhit[1]) == tuple:
-                    if dealertotal + 11 <= 21:
-                        dealertotal += 11
-                    else:
-                        dealertotal += 1
-                else:
-                    dealertotal += dealerhit[1]      
-
-            print('The dealer had',dealertotal)
-            sleep(0.5)
-            print('You had',playertotal)
-            sleep(0.5)
-            if dealertotal > 21:
-                print('The Dealer busted')
-                sleep(0.5)
-                print('You Win')
-                sleep(0.5)
-            elif dealertotal>playertotal: 
+            while dealer.total < 16:
+                dealer.hit()  
+            print('The dealer has',dealer.total,'and you have',player.total,'\n')
+            sleep(1)
+            if dealer.total > 21:
+                print('The Dealer busted. You win!!!')
+            elif dealer.total>player.total: 
                 print('You Lose')
-            elif dealertotal == playertotal:
+            elif dealer.total == player.total:
                 print('Push')
             else:
-                print('You Win')
+                print('You Win!!!')
             stand = True
         elif response.lower() == 'hit':
-            hit = random.sample(cards,1)[0]
-            print('you drew',hit[0])
-            sleep(0.5)
-            if type(hit[1]) == tuple:
-                if playertotal + 11 <= 21:
-                    playertotal += 11
-                else:
-                    playertotal += 1
-            else:
-                playertotal += hit[1]
-            print('your total is now',playertotal)
-            if playertotal > 21:
-                print('you BUSTED!')
-                sleep(1.5)
-                print('Dealer Wins')
+            player.hit()
+            print('you drew',player.myhand[-1][0])
+            print('TOTAL - ',player.total,'\n')
+            if player.total > 21:
+                print('You BUSTED! The Dealer Wins!!!')
                 break
         else:
             print('invalid option')
+    sleep(1)
+    print("\n")
 
 if __name__ == '__main__':
     play()
+
